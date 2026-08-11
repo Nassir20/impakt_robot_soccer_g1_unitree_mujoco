@@ -12,7 +12,8 @@ L'Apprentissage par Renforcement (RL) : Utilisation de l'algorithme Proximal Pol
 
 Le Contrôle Déterministe Bas Niveau (DDS) : Génération de trajectoires analytiques et cinématiques (marche sinusoïdale, séquences de tir, équilibrage statique) pour tester la réponse physique des actionneurs sous le middleware Unitree SDK2 à haute fréquence (200 Hz).
 
-![alt text](image.png)
+<img width="416" height="463" alt="image" src="https://github.com/user-attachments/assets/8b7de072-f61d-4b28-ab13-86e8460a1a91" />
+
 
 # Unitree G1 Humanoid - PPO Reinforcement Learning & Control (MuJoCo)
 
