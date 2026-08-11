@@ -38,44 +38,82 @@ simulate_python/
 ├── ppo_g1_stand_model.zip    # Poids du réseau de neurones PPO entraîné
 └── ppo_g1_tensorboard/       # Logs d'apprentissage TensorBoard
 
-⚙️ Configuration & Installation
-1. Prérequis
-Python 3.10+
+## ⚙️ Configuration & Installation
 
-Un environnement virtuel (recommandé)
+### 1. Prérequis
 
-2. Installation des dépendances
+- Python 3.10+
+- Un environnement virtuel (recommandé)
+
+### 2. Installation des dépendances
+
 Activer l'environnement virtuel et installer les bibliothèques requises :
 
+```bash
 # Activation de l'environnement virtuel (.venv)
 source .venv/bin/activate
 
 # Installation des packages
 pip install mujoco gymnasium stable-baselines3 tensorboard unitree_sdk2py
+```
 
-🚀 Utilisation
+---
 
-1. Lancer l'entraînement PPO (g1_train_ppo.py)
-Le script va initialiser l'environnement G1StandEnv et exécuter l'apprentissage PPO sur 100 000+ pas de temps.
+## 🚀 Utilisation
 
+### 1. Lancer l'entraînement PPO (`g1_train_ppo.py`)
+
+Le script initialise l'environnement `G1StandEnv` et exécute l'apprentissage PPO sur 100 000+ pas de temps.
+
+```bash
 python g1_train_ppo.py
+```
 
-our suivre les courbes d'apprentissage en temps réel via TensorBoard:
+Pour suivre les courbes d'apprentissage en temps réel via TensorBoard :
 
+```bash
 tensorboard --logdir=./ppo_g1_tensorboard/
+```
 
-2. Tester et visualiser la politique entraînée (enjoy_ppo.py)
-Charge le modèle sauvegardé ppo_g1_stand_model.zip et ouvre l'interface graphique interactive de MuJoCo pour observer la stabilisation du G1.
+### 2. Tester et visualiser la politique entraînée (`enjoy_ppo.py`)
 
+Charge le modèle sauvegardé `ppo_g1_stand_model.zip` et ouvre l'interface graphique interactive de MuJoCo pour observer la stabilisation du G1.
+
+```bash
 mjpython enjoy_ppo.py
+```
 
-3. Exécuter les contrôleurs déterministes (Low-Level DDS)
-Vous pouvez également tester les générateurs de mouvements analytiques bas niveau à 200 Hz
+### 3. Exécuter les contrôleurs déterministes (Low-Level DDS)
 
+Vous pouvez également tester les générateurs de mouvements analytiques bas niveau à 200 Hz :
+
+```bash
 # Générateur de marche sinusoïdale
 python g1_walk_controller.py
 
 # Séquence de coup de pied (Kick)
 python g1_kick_controller.py
+```
 
-🧠 Modèle Mathématique & Reward Shaping (g1_ppo_env.py)Espace d'Observation ($\mathcal{O}$) - 71D : Positions physiques (qpos), vitesses angulaires (qvel) et orientation spatiale de la base.Espace d'Action ($\mathcal{A}$) - 12D : Consignes de couple/position pour les 12 moteurs des jambes.Fonction de Récompense :$$R = R_{\text{hauteur}} + P_{\text{chute}} + P_{\text{inclinaison}} + P_{\text{effort}}$$$R_{\text{hauteur}}$ : Maximise le maintien du tronc à la hauteur nominale ($z \approx 0.74\text{ m}$).$P_{\text{chute}}$ : Pénalité si le robot perd de l'altitude.$P_{\text{inclinaison}}$ : Pénalité sur les déviations en roulis/tangage pour garder le buste droit.$P_{\text{effort}}$ : Pénalité d'énergie sur la somme des carrés des actions pour lisser le contrôle.
+---
+
+## 🧠 Modèle Mathématique & Reward Shaping (`g1_ppo_env.py`)
+
+**Espace d'observation (O) — 71 dimensions**
+Positions physiques (`qpos`), vitesses angulaires (`qvel`) et orientation spatiale de la base.
+
+**Espace d'action (A) — 12 dimensions**
+Consignes de couple/position pour les 12 moteurs des jambes.
+
+**Fonction de récompense**
+
+```
+R = R_hauteur + P_chute + P_inclinaison + P_effort
+```
+
+| Terme | Description |
+|---|---|
+| `R_hauteur` | Maximise le maintien du tronc à la hauteur nominale (z ≈ 0.74 m) |
+| `P_chute` | Pénalité si le robot perd de l'altitude |
+| `P_inclinaison` | Pénalité sur les déviations en roulis/tangage pour garder le buste droit |
+| `P_effort` | Pénalité d'énergie sur la somme des carrés des actions, pour lisser le contrôle |
